@@ -15,9 +15,6 @@ end
 
 # room numbers in the range of 0 - 1023, starting room is 339, the arrangement of rooms is 4 rooms tall, by 256 rooms wide
 def check_movement
-  if inputs.keyboard.key_down.forward_slash
-    state.show_boxes = !state.show_boxes
-  end
   if args.inputs.keyboard.left
     state.room_number -= 1
     state.room_number = 1023 if state.room_number == -1
@@ -40,7 +37,6 @@ def draw_room
   draw_closed_door
   draw_outer_walls
   draw_inner_walls
-  draw_wall_junctions if state.show_boxes
 end
 
 # player can't go straight back out the way they came in
@@ -81,7 +77,7 @@ def draw_wall_junctions
   start_y = 0
   count = 0
 
-  while count < 25
+  while count < 24
     outputs.solids  << { x: start_x, y: start_y, w: state.wall_width, h: state.wall_height, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
     start_x += state.segment_width + state.wall_width
     if start_x > 1280
@@ -131,8 +127,8 @@ def draw_wall_segment(x:, y:, dir:)
 end
 
 def set_defaults
-  state.wall_width = 18
-  state.wall_height = 18
+  state.wall_width = 16
+  state.wall_height = 16
   state.segment_height = (720 - (4 * state.wall_height)) / 3
   state.segment_width = (1280 - (6 * state.wall_width)) / 5
   state.custom_tick_count = 0
