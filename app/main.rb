@@ -42,7 +42,7 @@ def draw_room
   # draw_diagonal_test
   # puts state.array_of_wall_rects
   # puts "==========="
-  # create_room_array
+  # create_room_array if args.state.tick_count.zmod? 600
 end
 
 # player can't go straight back out the way they came in
@@ -108,10 +108,10 @@ end
 
 def create_room_array
   start_x = state.x_offset
-  start_y = state.y_offset
+  start_y = 720 - (state.y_offset * 2)
   count = 0
 
-  while start_y < 720 - 16
+  while start_y > 0
     outputs.solids << { x: start_x, y: start_y, w: state.wall_width / 2, h: state.wall_height / 2, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
     
     if geometry.find_intersect_rect( { x: start_x, y: start_y, w: state.wall_width / 2, h: state.wall_height / 2 }, state.array_of_wall_rects )
@@ -123,11 +123,11 @@ def create_room_array
     start_x += state.wall_width
     if start_x > 1280 - (28 + 16)
       start_x = state.x_offset
-      start_y += state.wall_height
+      start_y -= state.wall_height
       print "\n"
     end
   end
-  puts "====="
+  puts "===================================="
 end
 
 # this is a version of the generation system used in the arcade game berzerk - it follows the same patterns as the arcade game following a reset.
