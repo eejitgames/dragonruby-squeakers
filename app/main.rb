@@ -34,7 +34,7 @@ end
 
 # function to draw all the walls for a given room
 def draw_room
-  # state.array_of_wall_rects = []
+  state.array_of_wall_rects = []
   draw_closed_door
   draw_outer_walls
   draw_inner_walls
@@ -107,11 +107,11 @@ def draw_diagonal_test
 end
 
 def create_room_array
-  start_x = state.x_offset
-  start_y = 720 - (state.y_offset * 2)
+  start_x = state.x_offset - state.wall_width
+  start_y = 720 - state.y_offset
   count = 0
 
-  while start_y > 0
+  while start_y >= 0
     outputs.solids << { x: start_x, y: start_y, w: state.wall_width / 2, h: state.wall_height / 2, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
     
     if geometry.find_intersect_rect( { x: start_x, y: start_y, w: state.wall_width / 2, h: state.wall_height / 2 }, state.array_of_wall_rects )
@@ -121,8 +121,8 @@ def create_room_array
     end
     
     start_x += state.wall_width
-    if start_x > 1280 - (28 + 16)
-      start_x = state.x_offset
+    if start_x > 1280 - state.x_offset
+      start_x = state.x_offset - state.wall_width
       start_y -= state.wall_height
       print "\n"
     end
