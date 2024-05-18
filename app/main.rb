@@ -108,7 +108,7 @@ end
 
 def create_room_array
   start_x = state.x_offset - state.wall_width
-  start_y = 720 - state.y_offset
+  start_y = 720 - 8
   count = 0
 
   while start_y >= 0
@@ -179,7 +179,7 @@ def set_defaults
   state.segment_height = 16 * 13
   state.segment_width = 16 * 14
   state.x_offset = 28
-  state.y_offset = 16
+  state.y_offset = 24
   state.custom_tick_count = 0
   state.room_number = 0x0153
   state.defaults_set = true
