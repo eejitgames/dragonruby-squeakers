@@ -8,8 +8,9 @@ def tick args
   self.args = args
   outputs.background_color = [ 10, 10, 10 ]
   set_defaults if state.defaults_set.nil?
+  # outputs.primitives << args.layout.debug_primitives
   draw_room
-  # outputs.debug << "room: #{state.room_number.to_s(16).upcase}"
+  outputs.debug << "room: #{state.room_number.to_s(16).upcase}"
   check_movement if args.state.tick_count.zmod? 10
 end
 
@@ -36,6 +37,8 @@ end
 def draw_room
   # state.array_of_wall_rects = []
   draw_outer_wall_sprites
+  draw_inner_wall_sprites_debug
+  draw_inner_wall_sprites
   # draw_closed_door
   # draw_outer_walls
   # draw_inner_walls
@@ -46,14 +49,65 @@ def draw_room
   # create_room_array if args.state.tick_count.zmod? 600
 end
 
+def draw_inner_wall_sprites_debug
+  x = 16 * 16
+  y = 15 * 16
+  count = 0
+
+  # puts "============="
+  while count < 8
+    outputs.solids << { x: x, y: y, w: 48, h: 48, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    x += state.segment_width + state.wall_width
+    if x > 1200
+      x = 16 * 16
+      y += 13 * 16
+    end
+    # puts "x: #{x}"
+    # puts "y: #{y}"
+    # puts "outputs.solids << { x: #{x + 16}, y: #{y + 16}, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }"
+
+    count += 1
+  end
+  # puts "============="
+
+  outputs.solids << { x: 512, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  outputs.solids << { x: 752, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  outputs.solids << { x: 992, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  outputs.solids << { x: 272, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  outputs.solids << { x: 512, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  outputs.solids << { x: 752, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  outputs.solids << { x: 992, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  outputs.solids << { x: 272, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+
+  # draw debug grid
+  x = 16
+  y = 32
+
+  while x < 1280
+    outputs.solids << { x: x, y: y, w: 2, h: 672, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    x += 16
+  end
+
+  x = 16
+  y = 32
+
+  while y < 720
+    outputs.solids << { x: x, y: y, w: 1248, h: 2, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    y += 16
+  end
+end
+
+def draw_inner_wall_sprites
+end
+
 def draw_outer_wall_sprites
   x = 16
   y = 32
   outputs.sprites << { x: x, y: y, w: 48, h: 48, path: "sprites/wall_5.png" }
-  outputs.sprites << { x: x + (10 * 48), y: y, w: 48, h: 48, path: "sprites/wall_2.png" }
-  outputs.sprites << { x: x + (15 * 48), y: y, w: 48, h: 48, path: "sprites/wall_4.png" }
-  outputs.sprites << { x: x + (10 * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_2.png" }
-  outputs.sprites << { x: x + (15 * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_4.png" }
+  outputs.sprites << { x: x + (10 * 48), y: y, w: 48, h: 48, path: "sprites/wall_6.png" } # 2
+  outputs.sprites << { x: x + (15 * 48), y: y, w: 48, h: 48, path: "sprites/wall_6.png" } # 4
+  outputs.sprites << { x: x + (10 * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_6.png" } # 2
+  outputs.sprites << { x: x + (15 * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_6.png" } # 4
   outputs.sprites << { x: x, y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_12.png" }
   count = 1
   while count < 25
