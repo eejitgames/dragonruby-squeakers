@@ -34,15 +34,56 @@ end
 
 # function to draw all the walls for a given room
 def draw_room
-  state.array_of_wall_rects = []
-  draw_closed_door
-  draw_outer_walls
-  draw_inner_walls
+  # state.array_of_wall_rects = []
+  draw_outer_wall_sprites
+  # draw_closed_door
+  # draw_outer_walls
+  # draw_inner_walls
   # draw_wall_junctions
   # draw_diagonal_test
   # puts state.array_of_wall_rects
   # puts "==========="
   # create_room_array if args.state.tick_count.zmod? 600
+end
+
+def draw_outer_wall_sprites
+  x = 16
+  y = 32
+  outputs.sprites << { x: x, y: y, w: 48, h: 48, path: "sprites/wall_5.png" }
+  outputs.sprites << { x: x + (10 * 48), y: y, w: 48, h: 48, path: "sprites/wall_2.png" }
+  outputs.sprites << { x: x + (15 * 48), y: y, w: 48, h: 48, path: "sprites/wall_4.png" }
+  outputs.sprites << { x: x + (10 * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_2.png" }
+  outputs.sprites << { x: x + (15 * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_4.png" }
+  outputs.sprites << { x: x, y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_12.png" }
+  count = 1
+  while count < 25
+    if count > 9 && count < 16
+      count += 1
+      next
+    end
+    outputs.sprites << { x: x + (count * 48), y: y, w: 48, h: 48, path: "sprites/wall_6.png" }
+    outputs.sprites << { x: x + (count * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_6.png" }
+    count += 1
+  end
+  outputs.sprites << { x: x + (count * 48), y: y, w: 48, h: 48, path: "sprites/wall_3.png" }
+  outputs.sprites << { x: x + (count * 48), y: y + (13 * 48), w: 48, h: 48, path: "sprites/wall_10.png" }
+  
+  count = 1
+  while count < 13
+    if count > 3 && count < 9
+      count += 1
+      next
+    end
+    outputs.sprites << { x: x, y: y + (count * 48), w: 48, h: 48, path: "sprites/wall_9.png" }
+    outputs.sprites << { x: x + (25 * 48), y: y + (count * 48), w: 48, h: 48, path: "sprites/wall_9.png" }
+    count += 1
+  end
+  outputs.sprites << { x: x, y: y - 16 + (9 * 48), w: 48, h: 48, path: "sprites/wall_1.png" }
+  outputs.sprites << { x: x + (25 * 48), y: y - 16 + (9 * 48), w: 48, h: 48, path: "sprites/wall_1.png" }  
+  outputs.sprites << { x: x, y: y -16 + (4 * 48), w: 48, h: 48, path: "sprites/wall_9.png" }
+  outputs.sprites << { x: x + (25 * 48), y: y -16 + (4 * 48), w: 48, h: 48, path: "sprites/wall_9.png" }  
+  outputs.sprites << { x: x, y: y + 16 + (4 * 48), w: 48, h: 48, path: "sprites/wall_8.png" }
+  outputs.sprites << { x: x + (25 * 48), y: y + 16 + (4 * 48), w: 48, h: 48, path: "sprites/wall_8.png" }  
 end
 
 # player can't go straight back out the way they came in
