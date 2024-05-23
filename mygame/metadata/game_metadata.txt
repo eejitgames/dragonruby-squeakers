@@ -8,8 +8,8 @@
 
 devid=eejitgames
 devtitle=eejit
-gameid=squeakers
-gametitle=Squeakers
+gameid=berzerk-maze
+gametitle=Berzerk Maze
 version=0.1
 icon=metadata/icon.png
 
