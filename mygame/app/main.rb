@@ -118,23 +118,23 @@ end
 def draw_wall_segment_solids(x:, y:, dir:)
   case dir
   when :N
-    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
+    # outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
     14.times do |i|
       # align the room_grid array with what is presented on the screen
       state.room_grid[ 45 - (y + i) ][ x - 1 ] = 1
     end
   when :S
-    outputs.solids   <<  { x: (x - 1) * 16, y: ((y - 1) * 16) - state.segment_height + 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
+    # outputs.solids   <<  { x: (x - 1) * 16, y: ((y - 1) * 16) - state.segment_height + 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
     14.times do |i|
       state.room_grid[ (45 + 13) - (y + i) ][ x - 1 ] = 1
     end
   when :E
-    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
+    # outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
     16.times do |i|
       state.room_grid[ 45 - y ][ x + i - 1] = 1
     end
   when :W
-    outputs.solids   <<  { x: ((x - 1) * 16) - state.segment_width + 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
+    # outputs.solids   <<  { x: ((x - 1) * 16) - state.segment_width + 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
     16.times do |i|
       state.room_grid[ 45 - y ][ x + i - 16] = 1
     end
@@ -152,7 +152,6 @@ def draw_wall_segment_sprites(x:, y:, dir:)
       outputs.sprites <<  { x: (x - 2) * 16, y: y * 16 + (i * 48) - state.segment_height + 16, w: 48, h: 48, path: "sprites/wall_9.png" }
     end
   when :E
-    # outputs.solids    <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
     4.times do |i|
       outputs.sprites <<  { x: (x + 1) * 16 + (i * 48), y: (y - 2) * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
     end
@@ -207,10 +206,20 @@ def draw_wall_debug
   outputs.solids << { x: 46 * 16, y: 2 * 16,  w: 48, h: 48, r: 100, g: 100, b: 200 }
   outputs.solids << { x: 46 * 16, y: 41 * 16, w: 48, h: 48, r: 100, g: 100, b: 200 }
 
+  outputs.solids << { x: 16 * 16, y: 2 * 16,  w: 48, h: 48, r: 100, g: 100, b: 200 }
+  outputs.solids << { x: 16 * 16, y: 41 * 16, w: 48, h: 48, r: 100, g: 100, b: 200 }
+  outputs.solids << { x: 61 * 16, y: 2 * 16,  w: 48, h: 48, r: 100, g: 100, b: 200 }
+  outputs.solids << { x: 61 * 16, y: 41 * 16, w: 48, h: 48, r: 100, g: 100, b: 200 }
+
   outputs.solids << { x: 32 * 16, y: 42 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
   outputs.solids << { x: 47 * 16, y: 42 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
   outputs.solids << { x: 2 * 16,  y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
   outputs.solids << { x: 2 * 16,  y: 29 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+
+  outputs.solids << { x: 17 * 16, y: 3 * 16,  w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 17 * 16, y: 42 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 62 * 16, y: 3 * 16,  w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 62 * 16, y: 42 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
 
   outputs.solids << { x: 32 * 16, y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
   outputs.solids << { x: 47 * 16, y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
