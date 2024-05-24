@@ -18,17 +18,11 @@ def draw_room
   state.room_grid ||= Array.new(state.rows) { Array.new(state.cols, 0) }
   draw_outer_wall_solids
   draw_inner_wall_solids
+
   draw_wall_debug
 
-  # temp debug to console on room change
-  if state.pressed == 1  
-    puts "=================="
-    state.room_grid.each { |row| p row }
-    puts "=================="
-  end
-  
-  # draw_outer_wall_sprites
-  # draw_inner_wall_sprites
+  draw_outer_wall_sprites
+  draw_inner_wall_sprites
 end
 
 # room numbers in the range of 0 - 1023, starting room is 339, the arrangement of rooms is 4 rooms tall, by 256 rooms wide
@@ -86,29 +80,85 @@ def draw_inner_wall_solids
   draw_wall_segment_solids(x: 63, y: 17, dir: get_direction)
 end
 
+# draw the outermost walls that do not change
+def draw_outer_wall_sprites
+  draw_wall_segment_sprites(x: 3,  y: 4,  dir: :N)
+  draw_wall_segment_sprites(x: 3,  y: 30, dir: :N)
+  draw_wall_segment_sprites(x: 78, y: 4,  dir: :N)
+  draw_wall_segment_sprites(x: 78, y: 30, dir: :N)
+  draw_wall_segment_sprites(x: 3,  y: 4,  dir: :E)
+  draw_wall_segment_sprites(x: 3,  y: 43, dir: :E)
+  draw_wall_segment_sprites(x: 18, y: 4,  dir: :E)
+  draw_wall_segment_sprites(x: 18, y: 43, dir: :E)
+  draw_wall_segment_sprites(x: 48, y: 4,  dir: :E)
+  draw_wall_segment_sprites(x: 48, y: 43, dir: :E)
+  draw_wall_segment_sprites(x: 63, y: 4,  dir: :E)
+  draw_wall_segment_sprites(x: 63, y: 43, dir: :E)
+
+  outputs.sprites <<  { x: 1 * 16, y: 2 * 16, w: 48, h: 48, path: "sprites/wall_5.png" }
+  outputs.sprites <<  { x: 1 * 16, y: 42 * 16 - 16, w: 48, h: 48, path: "sprites/wall_12.png" }
+  outputs.sprites <<  { x: 76 * 16, y: 42 * 16 - 16, w: 48, h: 48, path: "sprites/wall_10.png" }
+  outputs.sprites <<  { x: 76 * 16, y: 2 * 16, w: 48, h: 48, path: "sprites/wall_3.png" }
+end
+
+# draw inner walls in room, forming a simple maze with wide corridors
+def draw_inner_wall_sprites
+  state.wall_seed = state.room_number
+  draw_wall_segment_sprites(x: 18, y: 30, dir: get_direction)
+  draw_wall_segment_sprites(x: 33, y: 30, dir: get_direction)
+  draw_wall_segment_sprites(x: 48, y: 30, dir: get_direction)
+  draw_wall_segment_sprites(x: 63, y: 30, dir: get_direction)
+  draw_wall_segment_sprites(x: 18, y: 17, dir: get_direction)
+  draw_wall_segment_sprites(x: 33, y: 17, dir: get_direction)
+  draw_wall_segment_sprites(x: 48, y: 17, dir: get_direction)
+  draw_wall_segment_sprites(x: 63, y: 17, dir: get_direction)
+end
+
 # function to draw wall segments, pass in the x, y coordinates, and the direction to draw the segment
 def draw_wall_segment_solids(x:, y:, dir:)
   case dir
   when :N
-    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
     14.times do |i|
       # align the room_grid array with what is presented on the screen
       state.room_grid[ 45 - (y + i) ][ x - 1 ] = 1
     end
   when :S
-    outputs.solids   <<  { x: (x - 1) * 16, y: ((y - 1) * 16) - state.segment_height + 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    outputs.solids   <<  { x: (x - 1) * 16, y: ((y - 1) * 16) - state.segment_height + 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
     14.times do |i|
       state.room_grid[ (45 + 13) - (y + i) ][ x - 1 ] = 1
     end
   when :E
-    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
     16.times do |i|
       state.room_grid[ 45 - y ][ x + i - 1] = 1
     end
   when :W
-    outputs.solids   <<  { x: ((x - 1) * 16) - state.segment_width + 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    outputs.solids   <<  { x: ((x - 1) * 16) - state.segment_width + 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
     16.times do |i|
       state.room_grid[ 45 - y ][ x + i - 16] = 1
+    end
+  end
+end
+
+def draw_wall_segment_sprites(x:, y:, dir:)
+  case dir
+  when :N
+    4.times do |i|
+      outputs.sprites <<  { x: (x - 2) * 16, y: y * 16 + (i * 48), w: 48, h: 48, path: "sprites/wall_9.png" }
+    end
+  when :S
+    4.times do |i|
+      outputs.sprites <<  { x: (x - 2) * 16, y: y * 16 + (i * 48) - state.segment_height + 16, w: 48, h: 48, path: "sprites/wall_9.png" }
+    end
+  when :E
+    # outputs.solids    <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
+    4.times do |i|
+      outputs.sprites <<  { x: (x + 1) * 16 + (i * 48), y: (y - 2) * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
+    end
+  when :W
+    4.times do |i|
+      outputs.sprites <<  { x: (x + 1) * 16 + (i * 48) - state.segment_width + 16, y: (y - 2) * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
     end
   end
 end
@@ -137,48 +187,65 @@ def get_direction
   end
 end
 
-def draw_outer_wall_sprites
-end
-
-def draw_inner_wall_sprites
-end
-
 def draw_wall_debug
-  x = 16 * 16
+  x = 16
   y = 15 * 16
   count = 0
-  while count < 8
-    outputs.solids << { x: x, y: y, w: 48, h: 48, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  while count < 12
+    outputs.solids << { x: x, y: y, w: 48, h: 48, r: 100, g: 100, b: 200 }
     x += state.segment_width - 16
-    if x > 1200
-      x = 16 * 16
+    if x > 1280
+      x = 16 # 16 * 16
       y += 13 * 16
     end
     count += 1
   end
 
-  outputs.solids << { x: 512, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
-  outputs.solids << { x: 752, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
-  outputs.solids << { x: 992, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
-  outputs.solids << { x: 272, y: 256, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
-  outputs.solids << { x: 512, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
-  outputs.solids << { x: 752, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
-  outputs.solids << { x: 992, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
-  outputs.solids << { x: 272, y: 464, w: 16, h: 16, r: 200, g: 200, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+  # show the junction points, and example sprite position at junction
+  outputs.solids << { x: 31 * 16, y: 2 * 16,  w: 48, h: 48, r: 100, g: 100, b: 200 }
+  outputs.solids << { x: 31 * 16, y: 41 * 16, w: 48, h: 48, r: 100, g: 100, b: 200 }
+  outputs.solids << { x: 46 * 16, y: 2 * 16,  w: 48, h: 48, r: 100, g: 100, b: 200 }
+  outputs.solids << { x: 46 * 16, y: 41 * 16, w: 48, h: 48, r: 100, g: 100, b: 200 }
+
+  outputs.solids << { x: 32 * 16, y: 42 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 47 * 16, y: 42 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 2 * 16,  y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 2 * 16,  y: 29 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+
+  outputs.solids << { x: 32 * 16, y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 47 * 16, y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 62 * 16, y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 17 * 16, y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 32 * 16, y: 29 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 47 * 16, y: 29 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 62 * 16, y: 29 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 17 * 16, y: 29 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+
+  outputs.solids << { x: 77 * 16, y: 16 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 77 * 16, y: 29 * 16, w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 32 * 16, y: 3 * 16,  w: 16, h: 16, r: 200, g: 200, b: 200 }
+  outputs.solids << { x: 47 * 16, y: 3 * 16,  w: 16, h: 16, r: 200, g: 200, b: 200 }
 
   # draw debug grid
   x = 16
   y = 32
   while x < 1280
-    outputs.solids << { x: x, y: y, w: 2, h: 672, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    outputs.solids << { x: x, y: y, w: 2, h: 672, r: 100, g: 100, b: 200 }
     x += 16
   end
 
   x = 16
   y = 32
   while y < 720
-    outputs.solids << { x: x, y: y, w: 1248, h: 2, r: 100, g: 100, b: 200, a: 255, anchor_x: 0, anchor_y: 0, blendmode_enum: 1 }
+    outputs.solids << { x: x, y: y, w: 1248, h: 2, r: 100, g: 100, b: 200 }
     y += 16
+  end
+
+  # temp debug to console on room change
+  if state.pressed == 1
+    puts "=================="
+    state.room_grid.each { |row| p row }
+    puts "=================="
   end
 end
 
