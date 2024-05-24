@@ -21,8 +21,8 @@ def draw_room
 
   draw_wall_debug
 
-  draw_outer_wall_sprites
-  draw_inner_wall_sprites
+  #draw_outer_wall_sprites
+  #draw_inner_wall_sprites
 end
 
 # room numbers in the range of 0 - 1023, starting room is 339, the arrangement of rooms is 4 rooms tall, by 256 rooms wide
@@ -64,7 +64,7 @@ def draw_outer_wall_solids
   draw_wall_segment_solids(x: 48, y: 4,  dir: :E)
   draw_wall_segment_solids(x: 48, y: 43, dir: :E)
   draw_wall_segment_solids(x: 63, y: 4,  dir: :E)
-  draw_wall_segment_solids(x: 63, y: 43, dir: :E)  
+  draw_wall_segment_solids(x: 63, y: 43, dir: :E)
 end
 
 # draw inner walls in room, forming a simple maze with wide corridors
@@ -95,10 +95,27 @@ def draw_outer_wall_sprites
   draw_wall_segment_sprites(x: 63, y: 4,  dir: :E)
   draw_wall_segment_sprites(x: 63, y: 43, dir: :E)
 
-  outputs.sprites <<  { x: 1 * 16, y: 2 * 16, w: 48, h: 48, path: "sprites/wall_5.png" }
-  outputs.sprites <<  { x: 1 * 16, y: 42 * 16 - 16, w: 48, h: 48, path: "sprites/wall_12.png" }
+  outputs.sprites <<  { x: 1 * 16,  y: 2 * 16, w: 48, h: 48, path: "sprites/wall_5.png" }
+  outputs.sprites <<  { x: 1 * 16,  y: 42 * 16 - 16, w: 48, h: 48, path: "sprites/wall_12.png" }
   outputs.sprites <<  { x: 76 * 16, y: 42 * 16 - 16, w: 48, h: 48, path: "sprites/wall_10.png" }
   outputs.sprites <<  { x: 76 * 16, y: 2 * 16, w: 48, h: 48, path: "sprites/wall_3.png" }
+
+  outputs.sprites << { x: 31 * 16,  y: 2 * 16,  w: 48, h: 48, path: "sprites/wall_6.png" }
+  outputs.sprites << { x: 31 * 16,  y: 41 * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
+  outputs.sprites << { x: 46 * 16,  y: 2 * 16,  w: 48, h: 48, path: "sprites/wall_6.png" }
+  outputs.sprites << { x: 46 * 16,  y: 41 * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
+
+  outputs.sprites << { x: 16 * 16,  y: 2 * 16,  w: 48, h: 48, path: "sprites/wall_6.png" }
+  outputs.sprites << { x: 16 * 16,  y: 41 * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
+  outputs.sprites << { x: 61 * 16,  y: 2 * 16,  w: 48, h: 48, path: "sprites/wall_6.png" }
+  outputs.sprites << { x: 61 * 16,  y: 41 * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
+
+  outputs.sprites << { x: 1 * 16,   y: 15 * 16, w: 48, h: 48, path: "sprites/wall_8.png" }
+  outputs.sprites << { x: 1 * 16,   y: 28 * 16, w: 48, h: 48, path: "sprites/wall_1.png" }
+  outputs.sprites << { x: 76 * 16,  y: 15 * 16, w: 48, h: 48, path: "sprites/wall_8.png" }
+  outputs.sprites << { x: 76 * 16,  y: 28 * 16, w: 48, h: 48, path: "sprites/wall_1.png" }
+
+  choose_junction_sprite(x: 1, y: 2)
 end
 
 # draw inner walls in room, forming a simple maze with wide corridors
@@ -118,25 +135,29 @@ end
 def draw_wall_segment_solids(x:, y:, dir:)
   case dir
   when :N
-    # outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
+    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
     14.times do |i|
       # align the room_grid array with what is presented on the screen
-      state.room_grid[ 45 - (y + i) ][ x - 1 ] = 1
+      # state.room_grid[ 45 - (y + i) ][ x - 1 ] = 1
+      state.room_grid[ y - 1 + i ][ x - 1 ] = 1
     end
   when :S
-    # outputs.solids   <<  { x: (x - 1) * 16, y: ((y - 1) * 16) - state.segment_height + 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
+    outputs.solids   <<  { x: (x - 1) * 16, y: ((y - 1) * 16) - state.segment_height + 16, w: 16, h: state.segment_height, r: 10, g: 100, b: 200 }
     14.times do |i|
-      state.room_grid[ (45 + 13) - (y + i) ][ x - 1 ] = 1
+      # state.room_grid[ (45 + 13) - (y + i) ][ x - 1 ] = 1
+      state.room_grid[ y + i - 14 ][ x - 1 ] = 1
     end
   when :E
-    # outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
+    outputs.solids   <<  { x: (x - 1) * 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
     16.times do |i|
-      state.room_grid[ 45 - y ][ x + i - 1] = 1
+      # state.room_grid[ 45 - y ][ x + i - 1] = 1
+      state.room_grid[ y - 1][ x + i - 1] = 1
     end
   when :W
-    # outputs.solids   <<  { x: ((x - 1) * 16) - state.segment_width + 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
+    outputs.solids   <<  { x: ((x - 1) * 16) - state.segment_width + 16, y: (y - 1) * 16, w: state.segment_width, h: 16, r: 10, g: 100, b: 200 }
     16.times do |i|
-      state.room_grid[ 45 - y ][ x + i - 16] = 1
+      # state.room_grid[ 45 - y ][ x + i - 16] = 1
+      state.room_grid[ y - 1][ x + i - 16] = 1
     end
   end
 end
@@ -160,6 +181,31 @@ def draw_wall_segment_sprites(x:, y:, dir:)
       outputs.sprites <<  { x: (x + 1) * 16 + (i * 48) - state.segment_width + 16, y: (y - 2) * 16, w: 48, h: 48, path: "sprites/wall_6.png" }
     end
   end
+end
+
+def choose_junction_sprite(x:, y:)
+  # x += 1
+  # y += 1
+  top = (y > 0 && state.room_grid[y-1][x] == 1) ? 1 : 0
+  right = (x < state.room_grid[0].length - 1 && state.room_grid[y][x+1] == 1) ? 1 : 0
+  bottom = (y < state.room_grid.length - 1 && state.room_grid[y+1][x] == 1) ? 1 : 0
+  left = (x > 0 && state.room_grid[y][x-1] == 1) ? 1 : 0
+
+=begin
+  puts60 "room_grid #{x}, #{y}: #{state.room_grid[y][x]}"
+  puts60 "top #{top} right #{right} bottom #{bottom} left #{left}"
+
+  puts60 "#{top}#{right}#{bottom}#{left}".to_i(2)
+
+  puts60 "#{state.room_grid[0][6]} #{state.room_grid[1][6]} #{state.room_grid[2][6]} #{state.room_grid[3][6]} #{state.room_grid[4][6]} #{state.room_grid[5][6]}"
+  puts60 "#{state.room_grid[0][5]} #{state.room_grid[1][5]} #{state.room_grid[2][5]} #{state.room_grid[3][5]} #{state.room_grid[4][5]} #{state.room_grid[5][5]}"
+  puts60 "#{state.room_grid[0][4]} #{state.room_grid[1][4]} #{state.room_grid[2][4]} #{state.room_grid[3][4]} #{state.room_grid[4][4]} #{state.room_grid[5][4]}"
+  puts60 "#{state.room_grid[0][3]} #{state.room_grid[1][3]} #{state.room_grid[2][3]} #{state.room_grid[3][3]} #{state.room_grid[4][3]} #{state.room_grid[5][3]}"
+  puts60 "#{state.room_grid[0][2]} #{state.room_grid[1][2]} #{state.room_grid[2][2]} #{state.room_grid[3][2]} #{state.room_grid[4][2]} #{state.room_grid[5][2]}"
+  puts60 "#{state.room_grid[0][1]} #{state.room_grid[1][1]} #{state.room_grid[2][1]} #{state.room_grid[3][1]} #{state.room_grid[4][1]} #{state.room_grid[5][1]}"
+  puts60 "#{state.room_grid[0][0]} #{state.room_grid[1][0]} #{state.room_grid[2][0]} #{state.room_grid[3][0]} #{state.room_grid[4][0]} #{state.room_grid[5][0]}"
+=end
+
 end
 
 # this is a version of the generation system used in the arcade game berzerk - it follows the same patterns as the arcade game following a reset.
@@ -253,7 +299,7 @@ def draw_wall_debug
   # temp debug to console on room change
   if state.pressed == 1
     puts "=================="
-    state.room_grid.each { |row| p row }
+    state.room_grid.reverse_each { |row| p row }
     puts "=================="
   end
 end
